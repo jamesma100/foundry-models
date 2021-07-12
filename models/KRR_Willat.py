@@ -30,47 +30,46 @@ def parse_xyz(filename):
     xyz = []
     charges = []
     smiles = ""
-    with open(filename, 'r') as f:
-        for line_num, line in enumerate(f):
-            if line_num == 0:
-                num_atoms = int(line)
-            elif line_num == 1:
-                scalar_properties = [float(i) for i in line.split()[2:]]
-            elif 2 <= line_num <= 1 + num_atoms:
-                atom_symbol, x, y, z, charge = line.split()
-                atomic_symbols.append(atom_symbol)
-                xyz.append([float(x), float(y), float(z)])
-                charges.append(float(charge))
-            elif line_num == num_atoms + 3:
-                smiles = str(line.split())
+    try:
+        with open(filename, 'r') as f:
+            for line_num, line in enumerate(f):
+                if line_num == 0:
+                    num_atoms = int(line)
+                elif line_num == 1:
+                    scalar_properties = [float(i) for i in line.split()[2:]]
+                elif 2 <= line_num <= 1 + num_atoms:
+                    atom_symbol, x, y, z, charge = line.split()
+                    atomic_symbols.append(atom_symbol)
+                    xyz.append([float(x), float(y), float(z)])
+                    charges.append(float(charge))
+                elif line_num == num_atoms + 3:
+                    smiles = str(line.split())
 
-    result = {
-        'num_atoms': num_atoms,
-        'atomic_symbols': atomic_symbols,
-        'pos': torch.tensor(xyz),
-        'charges': np.array(charges),
-        'smiles': smiles
-    }
-    return result
+        result = {
+            'num_atoms': num_atoms,
+            'atomic_symbols': atomic_symbols,
+            'pos': torch.tensor(xyz),
+            'charges': np.array(charges),
+            'smiles': smiles
+        }
+        return result
+    except:
+        return -1
 
 def Transform_Data():
     
     molecules = []
     num_files = 133885
-    temp = 10
-    files = listdir("XYZ_files")
-    print(files)
-    for file_name in files:
-    
-        # create molecule object
+    file_names = listdir("XYZ_files")
+    for file_name in file_names:
+        
         molecule = parse_xyz("XYZ_files/"+file_name)
+        if(molecule == -1):
+            continue
         molecule_obj = Atoms(symbols=molecule["atomic_symbols"], positions=molecule["pos"])
         molecules.append(molecule_obj)
 
     # set up soap descriptor
-    species = set()
-    species.update(molecule_obj.get_chemical_symbols())
-
     soap = SOAP(
         species=["C", "H", "O", "N", "F"],
         periodic=False,
@@ -81,15 +80,15 @@ def Transform_Data():
         sparse=False
     )
     print(molecules)
-    soap_train = soap.create(molecules[:25000])
-    soap_test = soap.create(molecules[25000:50000])
+    soap_train = soap.create(molecules[:5000])
+    soap_test = soap.create(molecules[5000:10000])
     print(soap_train.shape)
     
     
     SMILESdata, HomoData, GapData, Atomization_E = readCSV('data/qm9.csv')
     Atomization_E = list(Atomization_E.values())
-    y = np.array(Atomization_E[:25000])
-    w = np.array(Atomization_E[25000:50000])
+    y = np.array(Atomization_E[:5000])
+    w = np.array(Atomization_E[5000:10000])
     
     return soap_train, soap_test, y, w
 
@@ -121,6 +120,8 @@ def Create_Model():
     #model2 = KernelRidge(kernel='laplacian')
     #model3 = KernelRidge(kernel='laplacian')
     soap_train, soap_test, y ,w = Transform_Data()
+    print(soap_train.shape)
+    print(y.shape)
     model1.fit(soap_train, y)
     predict1 = model1.predict(soap_test)
     #model2.fit(X, y2)
@@ -128,7 +129,7 @@ def Create_Model():
     #model3.fit(X, y3)
     #predict3 = model3.predict(Z)
     
-    c = np.random.rand(25000)
+    c = np.random.rand(5000)
     pyplot.scatter(w, predict1, c=c)
     pyplot.ylabel('Test Data')
     pyplot.xlabel('Predict Data')
