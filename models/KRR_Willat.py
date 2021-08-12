@@ -86,8 +86,8 @@ def build_soap(start, end, u0_data):
         sparse=False
     )
     
-    feature_vector = soap.create(molecules[:750])
-    return feature_vector, u0_Data_shuffled[:750]
+    feature_vector = soap.create(molecules[:625])
+    return feature_vector, u0_Data_shuffled[:625]
 
 def transform(filepath):
     # parse gap data from qm9
