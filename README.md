@@ -36,6 +36,7 @@ conda install -c conda-forge dscribe
 conda install -c conda-forge ase
 pip install -U scikit-learn
 conda install -c conda-forge matplotlib
+```
 
 ## Usage
 
