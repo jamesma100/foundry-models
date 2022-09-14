@@ -1,8 +1,8 @@
 # Foundry Models
 
-This repository contains experimental machine learning models that predict properties of organic molecules. The objective is to build and deploy different models on an open-source Foundry cloud platform where researchers can run them with ease, as well as upload their own models. Our models are adapted from learning methods by many top researchers and we often use slightly different featurizers/models for the sake of simplicity and ease of implementation. Currently, we are only working on and maintaining the KRR/SOAP model, which can be found in models/notebooks/qm9_krr_soap.ipynb.
+Experimental machine learning models to predict properties of organic molecules.
 
-This project is done by myself (James Ma) and Sahas Gelli over the summer of 2021 under the supervision of Professor Dane Morgan.
+Created by myself (James Ma) and Sahas Gelli over the summer of 2021 under the supervision of Professor Dane Morgan.
 
 ## Installation
 
