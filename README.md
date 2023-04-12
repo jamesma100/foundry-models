@@ -1,12 +1,10 @@
-# Foundry Models
+# foundry-models
 
 Experimental machine learning models to predict properties of organic molecules.
 
 Created by myself (James Ma) and Sahas Gelli over the summer of 2021 under the supervision of Professor Dane Morgan.
 
 ## Installation
-
-These instructions are only for running the KRR/SOAP model. 
 
 Creating a [conda](https://docs.conda.io/en/latest/) environment and installing all the dependencies there is highly recommended. Some packages may need to be installed via [pip](https://pip.pypa.io/en/stable/#).
 ```bash
